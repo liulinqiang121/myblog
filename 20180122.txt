@@ -1,17 +1,7 @@
-今天在调用一组数据的时候，想要将数据分为单个，这样修改的时候回很容易将事件出发的数据找到，并传递到接口，但是用父组件传递数据给子组件的时候，子组件的数据一直显示未定义，父组件大致如下：
-  <div>
-     <carosel v-for="item in list" :data="item"></ carosel>
- </div>
-我在子组件使用了props获取数据，但一直没有获取到，看了很多文章，发现可以这样写：
-   <div>
-     <carosel v-for="item in list" :data.sync="item"></ carosel>
- </div>
-我就研究了下：
-  .sync在vue1中是实现父组件和子组件双向绑定的一个修饰符，到了Vue2中为了实现数据在父组件和子组件的单向流动，就停用了一段时间，但是最后从从Vue 2.3.0 起重新引入了 .sync 修饰符，但是这次它只是作为一个编译时的语法糖存在。它会被扩展为一个自动更新父组件属性的 v-on 监听器.
+今天和后台调用接口的时候，用的是element-ui的Cascader 级联选择器，方法很简单，在Vue模板中写入：
+    <el-cascader :options="options" v-model="selectedOptions" @change="handleChange"></el-cascader>
+其中，options是接口获取到的层级数据，selectedOptions是选择后的数据，不过这不是一个字符串值，是一个数组，如果我们要获取到最后层级选择的值，
+就获取数组的最后一个值就可以了。
+不过还有一个地方要注意下，因为这是一个可能比较大的数组值，数组里包含对象，对象里又要有数组，数据一定要对好，调用接口的时候不要只关注返回的数据，
+还要看前面的键名是否正确，我今天调用接口，半天都在对数据的结构，最后发现发现label被写成了lable，发现的时候相当无奈。
 
-如下代码
-<comp :foo.sync="bar"></comp>
-会被扩展为：
-<comp :foo="bar" @update:foo="val => bar = val"></comp>
-当子组件需要更新 foo 的值时，它需要显式地触发一个更新事件：
-this.$emit('update:foo', newValue)
