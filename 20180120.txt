@@ -15,3 +15,4 @@
 <comp :foo="bar" @update:foo="val => bar = val"></comp>
 当子组件需要更新 foo 的值时，它需要显式地触发一个更新事件：
 this.$emit('update:foo', newValue)
+
