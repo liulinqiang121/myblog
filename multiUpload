@@ -1,0 +1,138 @@
+vue中多文件上传，依赖element样式,axios模块，代码如下：
+1、template 
+
+   <el-form-item v-else label="上传附件：" prop="uFile" :rules="[{required:true,message:'必填项',trigger:'change,blur'}]">
+        <a href="javascript:;" class="a-upload">
+            <input type="file" name="uFile" @change="uploadImg" id="logo_img" title=" " multiple>上传图片
+        </a>
+        <ul id="fileName">
+            <li class="fileName el-upload-list__item is-finished" v-for="(item,index) in fileList" :key="item.id" :index="index">{{item}}
+              <i class="el-icon-close" @click="deleteFile(index)"></i>
+            </li>
+        </ul>
+        <el-input v-show="false" v-model="conditionForm.uFile[0]"></el-input>
+   </el-form-item>
+
+2、 script 
+  <script>
+    data() {
+      return {
+        conditionForm: {
+          uFile: [],
+        },
+        formData: {},
+     },
+   methods: { 
+      // 上传文件
+      uploadImg() {
+        var files = document.getElementById('logo_img').files;
+        this.formData = new FormData();
+        if (files && files.length) {
+          for (let item of files) {
+            let size = item.size / 1024 / 1024;
+            if (size > 2) {
+              this.$message.error('文件不能大于2M');
+              return false;
+            }
+            this.fileList.push(item['name']);
+            this.conditionForm.uFile.push(item);
+            this.formData.append('uFile',item)
+          }
+        }
+        
+      },
+      // 删除文件
+      deleteFile(index) {
+        this.fileList.splice(index, 1);
+        this.conditionForm.uFile.splice(index, 1);
+        this.formData = new FormData();
+     //   this.formData.append('uFile', this.conditionForm.uFile);
+        for(var item of this.conditionForm.uFile) {
+          this.formData.append('uFile',item);
+        }
+      },
+    // 提交表单
+      submit() {
+        this.$refs.conditionForm.validate((valid) => {
+          if (this.fileList.length > 5) {
+            this.$message.warning('文件数量最多为5');
+            return false;
+          };
+           // 如果有其他数据，可以这样添加
+          //this.formData.append('visitSituation', this.conditionForm.visitSituation);
+          //this.formData.append('caseDevelopment', this.conditionForm.caseDevelopment);
+          //this.formData.append('visitApplyId', this.conditionForm.visitApplyId);
+         // this.formData.set('uFile',JSON.stringify(this.formData.get('uFile')));
+          this.$axios
+            .post("/api/assignee/collectionManage/addVisitRecord", this.formData)
+            .then(res => {
+              if (res.data.code == 0) {
+                this.$message({
+                  type: 'success',
+                  message: '保存成功'
+                })
+              } else {
+                this.$util.failCallback(res.data, this);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+
+        })
+
+   }
+  </script>	
+  <style lang="scss" scoped>
+   // 原生文件上传样式--by liulinqiang
+.a-upload {
+    padding: 0px 10px;
+    margin: 5px 0 0 0;
+    height: 30px;
+    font-size: 14px;
+	line-height: 30px;
+	position: relative;
+	cursor: pointer;
+	color: #fff;
+	background: #409EFF;
+	border: 1px solid #409EFF;
+	border-radius: 4px;
+	overflow: hidden;
+	display: inline-block;
+	*display: inline;
+	*zoom: 1
+}
+
+.a-upload  input {
+	position: absolute;
+	font-size: 100px;
+	right: 0;
+	top: 0;
+	opacity: 0;
+	filter: alpha(opacity=0);
+	cursor: pointer
+}
+
+.a-upload:hover {
+    background: #66b1ff;
+    border-color: #66b1ff;
+}
+
+#fileName li {
+    color: #606266;
+    display: block;
+    margin-right: 40px;
+    overflow: hidden;
+    padding-left: 4px;
+    text-overflow: ellipsis;
+    transition: color .3s;
+    white-space: nowrap;
+    min-width: 200px;
+    font-size: 14px;
+    height: 24px;
+    line-height: 24px;
+    transition: all .5s cubic-bezier(.55, 0, .1, 1);
+    &:hover {}
+  }
+
+  </style>
