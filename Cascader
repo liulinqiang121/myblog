@@ -1,0 +1,6 @@
+今天和后台调用接口的时候，用的是element-ui的Cascader 级联选择器，方法很简单，在Vue模板中写入：
+    <el-cascader :options="options" v-model="selectedOptions" @change="handleChange"></el-cascader>
+其中，options是接口获取到的层级数据，selectedOptions是选择后的数据，不过这不是一个字符串值，是一个数组，如果我们要获取到最后层级选择的值，
+就获取数组的最后一个值就可以了。
+不过还有一个地方要注意下，因为这是一个可能比较大的数组值，数组里包含对象，对象里又要有数组，数据一定要对好，调用接口的时候不要只关注返回的数据，
+还要看前面的键名是否正确，我今天调用接口，半天都在对数据的结构，最后发现发现label被写成了lable，发现的时候相当无奈。
