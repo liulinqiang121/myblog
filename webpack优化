@@ -3,7 +3,7 @@
 1.将一些第三方工具和包不再用npm模块引入，改用cdn引入
 
 
-![](myblog/image/1.png)
+myblog/image/1.png
 图1
 这里讲要用cdn引入的模块名放在externals里面，防止将某些 包(package)打包到 bundle 中，然后像：import vue from 'vue'这些引入可以去掉。
 ![](https://upload-images.jianshu.io/upload_images/13382831-27ceae159fb20521.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
