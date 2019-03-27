@@ -1,0 +1,36 @@
+在ECMAScript 262规范，有如下描述：
+
+The void Operator
+The production UnaryExpression : void UnaryExpression is evaluated as follows:
+
+Let expr be the result of evaluating UnaryExpression.
+Call GetValue(expr).
+Return undefined.
+NOTE: GetValue must be called even though its value is not used because it may have observable side-effects.
+搬译一下：
+
+void操作符
+
+产生式 UnaryExpression : void UnaryExpression 按如下流程解释:
+
+令 expr 为解释执行UnaryExpression的结果。
+调用 GetValue(expr).
+返回 undefined.
+注意：GetValue一定要调用，即使它的值不会被用到，但是这个表达式可能会有副作用(side-effects)。
+
+重点在于：无论void后的表达式是什么，都会执行，void操作符都会返回undefined
+通常void在js中有两层作用：
+1 返回undefined
+undefined在js中不是保留字，那么我们就可以定义undefined这个变量，当我们要真的使用全局的undefined时，就可能被局部变量的覆盖，所以我们可以用 void 0去代替undefined，举个例子
+function exam(){
+var undefined = 5;
+console.log(undefined)；
+}
+我们执行完上面的那个函数，打印出来的是5，而不是undefined，我们可以在函数里执行 console.log(void 0)来代替
+
+2 执行无用操作
+如果有a链接，我们不希望点击的时候进行跳转，如果不写东西的话会又会刷新，所以我们通常会这么写：<a href=“javascript:void 0”>来执行空操作
+
+3 void执行后面的表达式
+例如： var a =1;void a++;
+当我们执行完上面的语句，a就会是2
