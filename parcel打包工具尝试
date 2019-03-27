@@ -1,0 +1,21 @@
+使用parcel作为vue全家桶的打包工具的尝试
+96  小强不是蟑螂啊
+2018.10.13 11:06* 字数 406 阅读 23评论 0喜欢 0
+编辑文章
+昨天看了parcel的官网：https://parceljs.org/，就手痒试了一下，用vue,vue-router,element-ui等做了一个用parcel作为打包工具的demo.
+
+地址：https://github.com/liulinqiang121/parcel-vue。喜欢请点赞。
+
+使用方法：
+
+下载： git clone https://github.com/liulinqiang121/parcel-vue
+
+安装模块： yarn 或者yarn install
+
+运行： yarn run start
+
+用起来感觉特别棒，不需要webpack那么多配置文件，只需要创建.babelrc适用Es6, .postcss.config.js文件进行css格式转换。最好玩的地方就是直接使用ES6的import（）来进行代码拆分，组件按需加载,与webpac的require,ensure()达到相同的效果。只是wepback使用import()和正则去匹配，parcel直接使用import（）。
+
+在 Parcel 中使用插件是前所未有的简单。你所做的，只是将它们安装好并保存到 package.json 中。插件需要以 parcel-plugin- 作为前缀被命名。例如 parcel-plugin-foo。任何在 package.json 中被列出的带有此前缀的依赖，都会在初始化的时候被自动加载。
+
+不过parcel还是有些问题的，build的时候，引用的两个插件版本不同，一直build不成功，所以我也就注释掉了。还是parcel没有proxyTable这种接口的代理。现在来看，parcel还不能当成主要的前段打包工具，看后面的发展吧。如果能够解决这些问题，那真的是用起来爽爆了。
