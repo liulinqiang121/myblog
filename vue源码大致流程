@@ -1,0 +1,46 @@
+我用的vue版本是2.5.17-beta.0版本，那就以这个版本为基础进行探索和记录，参考了github上的一个vue-console项目，就是以console.log的形式打印出了vue源码里许多步骤的注释。其实vue源码我看过了几遍，之前都只是专注细节，现在是总的大致流程，那现在开始吧。
+
+一。构造函数阶段
+
+在4710行定义了Vue函数，参数就是我们定义的options，函数会执行_init函数，但此刻只定义了并没有执行。
+2 在4719行执行了initMixin函数，Vue函数作为它的参数被传入，在Vue函数的原型链上定义了的_init方法，主要是合并初始化定义的options或者如果是组件合并options ，direactive,props
+3 在4720行执行了stateMixin函数，在Vue函数的原型连上增加了set,delete,data,prop等方法和属性
+4 在4721行执行了eventsMixin方法，在Vue的原型链上增加了on,off,emit,once方法
+5 在4722行执行了lifecycleMixin方法，在Vue的原型链上增加了_update, forceUpdate,destory属性和方法，
+6 在4723行执行了renderMixin方法，在Vue的原型链上增加了$nextTick，_render方法，包括_o,_n,_s,_l,_t,_q,_m等
+7 在5016行执行了initGlobalAPI方法，定义了vue的静态属性config,set,util,delete,nextTick等
+二。初始化阶段
+
+4710行，执行Vue函数，new vue({el:'#app',data:{}})，也就是执行了_init方法,完成data和methods等初始化为挂载作准备
+2 1949行，执行initProxy函数，vm实例的属性_renderProxy指向了自己
+3 2619行，执行了initLifecycle函数，在实例上添加children,refs, parent，_isDestroyed，_isMounted等 4 4611行，执行了initEvents方法，在实例上添加_events,refs, _hasHookEvent等
+5 4612行执行了initRender方法，在实例上添加_vnode,_staticTrees, slot,_c,createElement等
+6 4613执行了beforeCreate生命周期函数，
+7 4614行执行了initInjections方法，解决注入的数据并实行监听
+8 4615行执行了initState，initState(vm)会对props、methods、data、computed 和 watch 等初始化
+9 4616行执行了initProvide，为父组件provide中的变量准备
+10 4617行执行了created生命周期函数
+三。挂载阶段
+1 4627行执行了vm.mount(vm.options.el)，挂在到options中的dom元素上
+2 执行$mount生命周期
+2 获取绑定的dom元素，然后执行beforeMount 生命周期
+3 执行mountComponent函数，将绑定的dom带入，
+4 执行vm._update(vm._render()，其中_render函数是将获取到的模板或者文档字符串转换为ast，_update是将ast转换为真实的dom
+5 然后执行new Watcher(vm, updateComponent, noop），将组件或者模板进行监听，一旦变化执行beforeUpdate函数。
+6 执行了patch，虚拟dom变为真实dom
+
+四。更新阶段
+1 执行生命周期钩子beforeUpdate
+2 执行updateComponent方法
+3 再一次执行vm_update(vm_render())
+4 执行 vm.patch(prevVnode, vnode)，对比新旧vnode
+5 执行生命周期updated
+
+五 销毁阶段
+1 执行vue原型上 Vue.prototype.$destroy 函数，
+2 执行生命周期beforeDestroy
+3 将其自身从父组件移除，消除所有的监听函数和生命周期
+4 在执行patch方法，更新和消除vnode
+5 执行生命周期destroyed
+6 执行off方法，移除所有的方法
+
