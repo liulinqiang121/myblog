@@ -1,0 +1,122 @@
+1 判断是否是基础类型，其中有字符串，数字，布尔类型，还有es6的sybmol类型
+function isPrimitive (value) {
+      return (
+        typeof value === 'string' ||
+        typeof value === 'number' ||
+        // $flow-disable-line
+        typeof value === 'symbol' ||
+        typeof value === 'boolean'
+      )
+  }
+2 判断是否是promise，只要不为null或者undefined，然后then和catch的属性都是函数类型
+function isPromise (val) {
+  return (
+    isDef(val) &&
+    typeof val.then === 'function' &&
+    typeof val.catch === 'function'
+  )
+}
+3 将参数转换为字符串类型。首先判断是否为null,如果是返回空字符串，然后在判断是否是数组或者是基础的对象类型并且对象的toString方法和原型上的对象要相等，然后用JSON.stringify()，最后其他的用String()方法
+function toString (val) {
+  return val == null
+    ? ''
+    : Array.isArray(val) || (isPlainObject(val) && val.toString === _toString)
+      ? JSON.stringify(val, null, 2)
+      : String(val)
+}
+4 先做一个容器，判断是否含有特定参数。利用闭包，把各个标签或者组件组用逗号链接以字符串的方法传入参数，第二个参数是定义是否判断大小写，然后新建一个空对象，将其逐个最为对象属性设为true,最后返回一个函数，判断传入的单个参数是否为对象的属性，也就是是否是第一次传入的标签名和组件名中的一个
+function makeMap (
+  str,
+  expectsLowerCase
+) {
+  var map = Object.create(null);
+  var list = str.split(',');
+  for (var i = 0; i < list.length; i++) {
+    map[list[i]] = true;
+  }
+  return expectsLowerCase
+    ? function (val) { return map[val.toLowerCase()]; }
+    : function (val) { return map[val]; }
+}
+5 做一个纯函数的缓存
+function cached (fn) {
+  var cache = Object.create(null);
+  return (function cachedFn (str) {
+    var hit = cache[str];
+    return hit || (cache[str] = fn(str))
+  })
+}
+6判断两个值都是相等
+function looseEqual (a, b) {
+  //基础类型
+  if (a === b) { return true }
+  var isObjectA = isObject(a);
+  var isObjectB = isObject(b);
+  // 都是对象类型
+  if (isObjectA && isObjectB) {
+    try {
+      var isArrayA = Array.isArray(a);
+      var isArrayB = Array.isArray(b);
+      // 都是数组，判断长度相等并且用every遍历判断两个数组对应位置的值相等呢过
+      if (isArrayA && isArrayB) {
+        return a.length === b.length && a.every(function (e, i) {
+          return looseEqual(e, b[i])
+        })
+      // 如果是Date类型，时间相等
+      } else if (a instanceof Date && b instanceof Date) {
+        return a.getTime() === b.getTime()
+     // 其他情况，调用递归逐个判断是否相等
+      } else if (!isArrayA && !isArrayB) {
+        var keysA = Object.keys(a);
+        var keysB = Object.keys(b);
+        return keysA.length === keysB.length && keysA.every(function (key) {
+          return looseEqual(a[key], b[key])
+        })
+      } else {
+        /* istanbul ignore next */
+        return false
+      }
+    } catch (e) {
+      /* istanbul ignore next */
+      return false
+    }
+  } else if (!isObjectA && !isObjectB) {
+    // 都不是对象，转换成字符串类型后判断您是否相等
+    return String(a) === String(b)
+  } else {
+    return false
+  }
+}
+7 将字符串拼接n次，这个函数厉害了，涉及到算法了。将n转换为二进制，每次向右移动一位，然后字符串str加上自身一次，也就是x2，只要n>0,并且最后一位是1，res就加上缓存的str，最后等于0返回结果。写这个的人好骚啊，直接将传入的str变量作为字符串x2的缓存使用，减少了一个变量，牛逼啊，要是我写肯定会再要声明一个变量的。
+   var repeat = function (str, n) {
+    var res = '';
+    while (n) {
+      if (n % 2 === 1) { res += str; }
+      if (n > 1) { str += str; }
+      n >>= 1;
+    }
+    return res
+  };
+8 es6中Set的Polyfill,如果不支持Set，就用对象去设置属性是否为true,
+if (typeof Set !== 'undefined' && isNative(Set)) {
+  // use native Set when available.
+  _Set = Set;
+} else {
+  // a non-standard Set polyfill that only works with primitive keys.
+  _Set = /*@__PURE__*/(function () {
+    function Set () {
+      this.set = Object.create(null);
+    }
+    Set.prototype.has = function has (key) {
+      return this.set[key] === true
+    };
+    Set.prototype.add = function add (key) {
+      this.set[key] = true;
+    };
+    Set.prototype.clear = function clear () {
+      this.set = Object.create(null);
+    };
+
+    return Set;
+  }());
+}
