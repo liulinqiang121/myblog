@@ -1,7 +1,11 @@
-!(https://upload-images.jianshu.io/upload_images/13382831-344769529bd08f4e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp)
-这是一个超多输入框的表单，很多，不只是上面一张图显示的那样，而且这些数据都是后台传过来的值，包括输入框的label，value，而且产品和ui不让用'*'去显示。那这样就不能用Element中的form表单验证了，只有自己写，不过反正也是后台返回的数据，分为几类，每个类都是一个数组。由于上面的条件，想到了解决思路：
-首先，遍历接口返回的大对象，每个对象下面都是一个数组，遍历数组，数组中的是输入框label，value等，我可以给每个输入框的对象添加一个error，并在模板遍历的时候添加，每次输入后，通过blur事件，将其用正则等校验，校验成功，error设置为空，不通过error为失败原因，最后提交的时候，只要校验所有的数据的error为空，就调用提交接口，否则，将error属性显示到模板
+![16.png](https://upload-images.jianshu.io/upload_images/13382831-344769529bd08f4e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-!(https://upload-images.jianshu.io/upload_images/13382831-f9e1f218e889af68.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp)
-!(https://upload-images.jianshu.io/upload_images/13382831-780f7acda106b4f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/889/format/webp)
-!(https://upload-images.jianshu.io/upload_images/13382831-dcb2fcb34611acb3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/659/format/webp)
+这是一个超多输入框的表单，很多，不只是上面一张图显示的那样，而且这些数据都是后台传过来的值，包括输入框的label，value，而且产品和ui不让用'*'去显示。那这样就不能用Element中的form表单验证了，只有自己写，不过反正也是后台返回的数据，分为几类，每个类都是一个数组。由于上面的条件，想到了解决思路：
+  首先，遍历接口返回的大对象，每个对象下面都是一个数组，遍历数组，数组中的是输入框label，value等，我可以给每个输入框的对象添加一个error，并在模板遍历的时候添加，每次输入后，通过blur事件，将其用正则等校验，校验成功，error设置为空，不通过error为失败原因，最后提交的时候，只要校验所有的数据的error为空，就调用提交接口，否则，将error属性显示到模板
+
+![17.png](https://upload-images.jianshu.io/upload_images/13382831-f9e1f218e889af68.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+![18.png](https://upload-images.jianshu.io/upload_images/13382831-780f7acda106b4f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+![19.png](https://upload-images.jianshu.io/upload_images/13382831-dcb2fcb34611acb3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
